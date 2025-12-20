@@ -30,6 +30,14 @@
                   <Icon icon="mdi:account" class="dropdown-icon" />
                   <span>个人中心</span>
                 </div>
+                <div 
+                  v-if="userStore.user?.role === '超级用户' || userStore.user?.role === '管理员'"
+                  class="dropdown-item" 
+                  @click="$router.push('/notices/manage'); showDropdown = false"
+                >
+                  <Icon icon="mdi:bullhorn" class="dropdown-icon" />
+                  <span>公告管理</span>
+                </div>
                 <div class="dropdown-item" @click="handleLogout">
                   <Icon icon="mdi:logout" class="dropdown-icon" />
                   <span>退出登录</span>
