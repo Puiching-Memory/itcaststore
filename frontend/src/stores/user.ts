@@ -9,6 +9,7 @@ export interface User {
   gender: string
   telephone: string
   role: string
+  introduce?: string
 }
 
 export const useUserStore = defineStore('user', () => {
@@ -46,12 +47,36 @@ export const useUserStore = defineStore('user', () => {
     isAuthenticated.value = false
   }
 
+  const fetchUserInfo = async () => {
+    try {
+      const response = await api.get('/users/me')
+      user.value = response.data.data
+      return response.data
+    } catch (error) {
+      console.error('获取用户信息失败:', error)
+      throw error
+    }
+  }
+
+  const updateUserInfo = async (userData: Partial<User>) => {
+    try {
+      const response = await api.put('/users/me', userData)
+      user.value = response.data.data
+      return response.data
+    } catch (error) {
+      console.error('更新用户信息失败:', error)
+      throw error
+    }
+  }
+
   return {
     user,
     token,
     isAuthenticated,
     login,
     register,
-    logout
+    logout,
+    fetchUserInfo,
+    updateUserInfo
   }
 })

@@ -66,8 +66,10 @@ import { Icon } from '@iconify/vue'
 import Header from '@/components/Header.vue'
 import api from '@/utils/api'
 import { ElMessage } from 'element-plus'
+import { useCartStore } from '@/stores/cart'
 
 const route = useRoute()
+const cartStore = useCartStore()
 const product = ref<any>(null)
 
 const loadProduct = async () => {
@@ -82,11 +84,15 @@ const loadProduct = async () => {
 
 const addToCart = () => {
   if (product.value) {
-    ElMessage.success(`已将《${product.value.name}》添加到购物车`)
-  } else {
-    ElMessage.success('已添加到购物车')
+    cartStore.addItem({
+      id: product.value.id.toString(),
+      name: product.value.name,
+      price: product.value.price,
+      imgurl: product.value.imgurl,
+      category: product.value.category,
+      description: product.value.description
+    })
   }
-  // TODO: 实现购物车功能
 }
 
 const handleImageError = (event: Event) => {

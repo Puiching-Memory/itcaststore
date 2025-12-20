@@ -1,11 +1,12 @@
 <template>
   <div class="register-container">
     <div class="register-card">
-      <div class="card-header">
-        <Icon icon="mdi:account-plus" class="header-icon" />
-        <h2>用户注册</h2>
-      </div>
-      <form @submit.prevent="handleRegister" class="register-form">
+      <div class="register-card-content">
+        <div class="card-header">
+          <Icon icon="mdi:account-plus" class="header-icon" />
+          <h2>用户注册</h2>
+        </div>
+        <form @submit.prevent="handleRegister" class="register-form">
         <div class="form-group">
           <label class="form-label">用户名</label>
           <div class="input-wrapper">
@@ -110,6 +111,7 @@
           </button>
         </div>
       </form>
+      </div>
     </div>
   </div>
 </template>
@@ -209,11 +211,47 @@ const handleRegister = async () => {
   -webkit-backdrop-filter: blur(50px);
   border: 1px solid rgba(255, 255, 255, 0.6);
   border-radius: 40px;
-  padding: 48px;
   box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.15),
               0 1px 0 rgba(255, 255, 255, 0.6) inset;
   max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.register-card-content {
+  padding: 48px;
   overflow-y: auto;
+  overflow-x: hidden;
+  flex: 1;
+}
+
+/* 自定义滚动条样式，使其与圆角对齐 */
+.register-card-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.register-card-content::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 0;
+}
+
+.register-card-content::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.register-card-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.3);
+  background-clip: padding-box;
+}
+
+/* Firefox 滚动条样式 */
+.register-card-content {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
 }
 
 .card-header {
@@ -423,8 +461,11 @@ const handleRegister = async () => {
 
 @media (max-width: 768px) {
   .register-card {
-    padding: 32px 24px;
     border-radius: 32px;
+  }
+
+  .register-card-content {
+    padding: 32px 24px;
   }
   
   .card-header h2 {

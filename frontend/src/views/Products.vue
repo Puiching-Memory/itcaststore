@@ -20,6 +20,34 @@
             </button>
           </div>
         </div>
+        
+        <!-- 分类筛选 -->
+        <div class="filter-section">
+          <div class="filter-card">
+            <div class="filter-header">
+              <Icon icon="mdi:filter" class="filter-icon" />
+              <span class="filter-title">图书分类</span>
+            </div>
+            <div class="category-list">
+              <button
+                class="category-btn"
+                :class="{ active: selectedCategory === '' }"
+                @click="selectCategory('')"
+              >
+                全部
+              </button>
+              <button
+                v-for="category in categories"
+                :key="category"
+                class="category-btn"
+                :class="{ active: selectedCategory === category }"
+                @click="selectCategory(category)"
+              >
+                {{ category }}
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- 商品网格 -->
@@ -96,20 +124,48 @@ import { Icon } from '@iconify/vue'
 import Header from '@/components/Header.vue'
 import api from '@/utils/api'
 import { ElMessage } from 'element-plus'
+import { useCartStore } from '@/stores/cart'
 
 interface Product {
   id: number
   name: string
   price: number
   imgurl: string
+  category?: string
 }
 
 const router = useRouter()
+const cartStore = useCartStore()
 const products = ref<Product[]>([])
 const keyword = ref('')
+const selectedCategory = ref('')
 const currentPage = ref(1)
 const pageSize = ref(12)
 const total = ref(0)
+
+// 图书分类列表（根据数据库中的实际分类）
+const categories = ref<string[]>([
+  '编程类',
+  '设计类',
+  '技术类',
+  '前端开发',
+  '后端开发',
+  '移动开发',
+  '算法',
+  '数据库',
+  '网络安全',
+  '云计算',
+  '机器学习',
+  'DevOps',
+  '测试',
+  '项目管理',
+  '架构设计',
+  '前端框架',
+  '全栈开发',
+  '性能优化',
+  '设计模式',
+  '系统设计'
+])
 
 const totalPages = computed(() => {
   return Math.ceil(total.value / pageSize.value)
@@ -123,6 +179,9 @@ const loadProducts = async () => {
     }
     if (keyword.value) {
       params.keyword = keyword.value
+    }
+    if (selectedCategory.value) {
+      params.category = selectedCategory.value
     }
     const response = await api.get('/products', { params })
     products.value = response.data.data.content
@@ -138,6 +197,14 @@ const searchProducts = () => {
   loadProducts()
 }
 
+const selectCategory = (category: string) => {
+  selectedCategory.value = category
+  currentPage.value = 1
+  loadProducts()
+  // 滚动到顶部
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
 const goToPage = (page: number) => {
   if (page >= 1 && page <= totalPages.value) {
     currentPage.value = page
@@ -151,8 +218,13 @@ const goToProduct = (id: number) => {
 }
 
 const addToCart = (product: Product) => {
-  ElMessage.success(`已将《${product.name}》添加到购物车`)
-  // TODO: 实现购物车功能
+  cartStore.addItem({
+    id: product.id.toString(),
+    name: product.name,
+    price: product.price,
+    imgurl: product.imgurl,
+    category: product.category
+  })
 }
 
 const handleImageError = (event: Event) => {
@@ -181,6 +253,9 @@ onMounted(() => {
 /* 搜索区域 */
 .search-section {
   margin-bottom: 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
 .search-card {
@@ -265,6 +340,83 @@ onMounted(() => {
   font-size: 18px;
   width: 18px;
   height: 18px;
+}
+
+/* 分类筛选区域 */
+.filter-section {
+  margin-top: 0;
+}
+
+.filter-card {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(50px);
+  -webkit-backdrop-filter: blur(50px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 28px;
+  padding: 24px;
+  box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.08),
+              0 1px 0 rgba(255, 255, 255, 0.6) inset;
+}
+
+.filter-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.filter-icon {
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  color: var(--graphite, #1C1C1E);
+}
+
+.filter-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--graphite, #1C1C1E);
+}
+
+.category-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.category-btn {
+  padding: 10px 20px;
+  border-radius: 20px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--graphite, #1C1C1E);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+
+.category-btn:hover {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(0, 0, 0, 0.15);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.category-btn.active {
+  background: var(--graphite, #1C1C1E);
+  color: white;
+  border-color: var(--graphite, #1C1C1E);
+  box-shadow: 0 4px 12px rgba(28, 28, 30, 0.3);
+}
+
+.category-btn.active:hover {
+  background: var(--graphite-light, #2C2C2E);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(28, 28, 30, 0.35);
 }
 
 /* 商品区域 */
@@ -581,6 +733,19 @@ onMounted(() => {
 
   .product-info {
     padding: 16px;
+  }
+
+  .category-list {
+    gap: 8px;
+  }
+
+  .category-btn {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+
+  .filter-card {
+    padding: 20px;
   }
 
   .product-name {

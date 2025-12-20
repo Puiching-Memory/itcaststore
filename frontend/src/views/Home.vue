@@ -250,10 +250,10 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { Icon } from '@iconify/vue'
-import { ElMessage } from 'element-plus'
 import type { ComponentPublicInstance } from 'vue'
 import Header from '@/components/Header.vue'
 import api from '@/utils/api'
+import { useCartStore } from '@/stores/cart'
 
 interface Product {
   id: number
@@ -276,6 +276,7 @@ interface Banner {
 }
 
 const router = useRouter()
+const cartStore = useCartStore()
 const hotProducts = ref<Product[]>([])
 const notices = ref<Notice[]>([])
 const banners = ref<Banner[]>([
@@ -309,8 +310,12 @@ const goToProduct = (id: number) => {
 }
 
 const addToCart = (product: Product) => {
-  ElMessage.success(`已将《${product.name}》添加到购物车`)
-  // TODO: 实现购物车功能
+  cartStore.addItem({
+    id: product.id.toString(),
+    name: product.name,
+    price: product.price,
+    imgurl: product.imgurl
+  })
 }
 
 const handleImageError = (event: Event) => {
