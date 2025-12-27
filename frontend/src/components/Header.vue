@@ -38,6 +38,14 @@
                   <Icon icon="mdi:bullhorn" class="dropdown-icon" />
                   <span>公告管理</span>
                 </div>
+                <div 
+                  v-if="userStore.user?.role === '超级用户' || userStore.user?.role === '管理员'"
+                  class="dropdown-item" 
+                  @click="$router.push('/products/manage'); showDropdown = false"
+                >
+                  <Icon icon="mdi:store" class="dropdown-icon" />
+                  <span>商品管理</span>
+                </div>
                 <div class="dropdown-item" @click="handleLogout">
                   <Icon icon="mdi:logout" class="dropdown-icon" />
                   <span>退出登录</span>
@@ -104,8 +112,17 @@ const handleClickOutside = (event: MouseEvent) => {
   }
 }
 
-onMounted(() => {
+onMounted(async () => {
   document.addEventListener('click', handleClickOutside)
+  
+  // 如果已认证但没有用户信息，自动获取用户信息
+  if (userStore.isAuthenticated && !userStore.user) {
+    try {
+      await userStore.fetchUserInfo()
+    } catch (error) {
+      console.error('获取用户信息失败:', error)
+    }
+  }
 })
 
 onUnmounted(() => {

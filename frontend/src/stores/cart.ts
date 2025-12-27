@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { ElMessage } from 'element-plus'
+import { useUserStore } from './user'
 
 export interface CartItem {
   id: string
@@ -61,6 +62,18 @@ export const useCartStore = defineStore('cart', () => {
     category?: string
     description?: string
   }, quantity: number = 1) => {
+    // 检查用户是否已登录
+    const userStore = useUserStore()
+    if (!userStore.isAuthenticated) {
+      ElMessage.warning({
+        message: '请先登录后再添加商品到购物车',
+        duration: 2000,
+        offset: typeof window !== 'undefined' ? window.innerHeight - 150 : 80,
+        showClose: false
+      })
+      return false
+    }
+
     const existingItem = items.value.find(item => item.id === product.id)
 
     if (existingItem) {
@@ -93,6 +106,7 @@ export const useCartStore = defineStore('cart', () => {
     }
 
     saveCart()
+    return true
   }
 
   // 从购物车删除商品

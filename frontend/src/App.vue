@@ -5,13 +5,28 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+import { useUserStore } from '@/stores/user'
 
 const route = useRoute()
+const userStore = useUserStore()
 
 const isAuthPage = computed(() => {
   return route.name === 'login' || route.name === 'register'
+})
+
+// 应用启动时，如果有 token 但没有用户信息，自动获取用户信息
+onMounted(async () => {
+  if (userStore.isAuthenticated && !userStore.user) {
+    try {
+      await userStore.fetchUserInfo()
+    } catch (error) {
+      // 如果获取失败（如 token 过期），清除认证状态
+      console.error('获取用户信息失败:', error)
+      userStore.logout()
+    }
+  }
 })
 </script>
 

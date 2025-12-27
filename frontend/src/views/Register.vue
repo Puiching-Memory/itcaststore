@@ -7,110 +7,116 @@
           <h2>用户注册</h2>
         </div>
         <form @submit.prevent="handleRegister" class="register-form">
-        <div class="form-group">
-          <label class="form-label">用户名</label>
-          <div class="input-wrapper">
-            <Icon icon="mdi:account" class="input-icon" />
-            <input
-              v-model="form.username"
-              type="text"
-              placeholder="请输入用户名（3-20个字符）"
-              class="form-input"
-              required
-              minlength="3"
-              maxlength="20"
-            />
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">用户名</label>
+              <div class="input-wrapper">
+                <Icon icon="mdi:account" class="input-icon" />
+                <input
+                  v-model="form.username"
+                  type="text"
+                  placeholder="3-20个字符"
+                  class="form-input"
+                  required
+                  minlength="3"
+                  maxlength="20"
+                />
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">邮箱</label>
+              <div class="input-wrapper">
+                <Icon icon="mdi:email" class="input-icon" />
+                <input
+                  v-model="form.email"
+                  type="email"
+                  placeholder="请输入邮箱"
+                  class="form-input"
+                  required
+                />
+              </div>
+            </div>
           </div>
-        </div>
-        <div class="form-group">
-          <label class="form-label">密码</label>
-          <div class="input-wrapper">
-            <Icon icon="mdi:lock" class="input-icon" />
-            <input
-              v-model="form.password"
-              type="password"
-              placeholder="请输入密码（6-20个字符）"
-              class="form-input"
-              required
-              minlength="6"
-              maxlength="20"
-            />
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">密码</label>
+              <div class="input-wrapper">
+                <Icon icon="mdi:lock" class="input-icon" />
+                <input
+                  v-model="form.password"
+                  type="password"
+                  placeholder="6-20个字符"
+                  class="form-input"
+                  required
+                  minlength="6"
+                  maxlength="20"
+                />
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">确认密码</label>
+              <div class="input-wrapper">
+                <Icon icon="mdi:lock-check" class="input-icon" />
+                <input
+                  v-model="form.confirmPassword"
+                  type="password"
+                  placeholder="再次输入密码"
+                  class="form-input"
+                  required
+                />
+              </div>
+            </div>
           </div>
-        </div>
-        <div class="form-group">
-          <label class="form-label">确认密码</label>
-          <div class="input-wrapper">
-            <Icon icon="mdi:lock-check" class="input-icon" />
-            <input
-              v-model="form.confirmPassword"
-              type="password"
-              placeholder="请再次输入密码"
-              class="form-input"
-              required
-            />
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">性别</label>
+              <div class="radio-group">
+                <label class="radio-label">
+                  <input
+                    v-model="form.gender"
+                    type="radio"
+                    value="男"
+                    class="radio-input"
+                  />
+                  <Icon icon="mdi:gender-male" class="radio-icon" />
+                  <span>男</span>
+                </label>
+                <label class="radio-label">
+                  <input
+                    v-model="form.gender"
+                    type="radio"
+                    value="女"
+                    class="radio-input"
+                  />
+                  <Icon icon="mdi:gender-female" class="radio-icon" />
+                  <span>女</span>
+                </label>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">电话</label>
+              <div class="input-wrapper">
+                <Icon icon="mdi:phone" class="input-icon" />
+                <input
+                  v-model="form.telephone"
+                  type="tel"
+                  placeholder="请输入电话"
+                  class="form-input"
+                />
+              </div>
+            </div>
           </div>
-        </div>
-        <div class="form-group">
-          <label class="form-label">邮箱</label>
-          <div class="input-wrapper">
-            <Icon icon="mdi:email" class="input-icon" />
-            <input
-              v-model="form.email"
-              type="email"
-              placeholder="请输入邮箱"
-              class="form-input"
-              required
-            />
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="form-label">性别</label>
-          <div class="radio-group">
-            <label class="radio-label">
-              <input
-                v-model="form.gender"
-                type="radio"
-                value="男"
-                class="radio-input"
-              />
-              <Icon icon="mdi:gender-male" class="radio-icon" />
-              <span>男</span>
-            </label>
-            <label class="radio-label">
-              <input
-                v-model="form.gender"
-                type="radio"
-                value="女"
-                class="radio-input"
-              />
-              <Icon icon="mdi:gender-female" class="radio-icon" />
-              <span>女</span>
-            </label>
-          </div>
-        </div>
-        <div class="form-group">
-          <label class="form-label">电话</label>
-          <div class="input-wrapper">
-            <Icon icon="mdi:phone" class="input-icon" />
-            <input
-              v-model="form.telephone"
-              type="tel"
-              placeholder="请输入电话"
-              class="form-input"
-            />
-          </div>
-        </div>
-        <button type="submit" class="submit-btn" :disabled="loading">
-          <Icon icon="mdi:account-plus" class="btn-icon" />
-          <span>{{ loading ? '注册中...' : '注册' }}</span>
-        </button>
-        <div class="form-footer">
-          <button type="button" class="link-btn" @click="$router.push('/login')">
-            <Icon icon="mdi:login" class="link-icon" />
-            <span>已有账号？立即登录</span>
+          <button type="submit" class="submit-btn" :disabled="loading">
+            <Icon icon="mdi:account-plus" class="btn-icon" />
+            <span>{{ loading ? '注册中...' : '注册' }}</span>
           </button>
-        </div>
-      </form>
+          <div class="form-footer">
+            <button type="button" class="link-btn" @click="$router.push('/login')">
+              <Icon icon="mdi:login" class="link-icon" />
+              <span>已有账号？立即登录</span>
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
@@ -181,7 +187,7 @@ const handleRegister = async () => {
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
-  padding: 32px;
+  padding: 20px;
   position: relative;
 }
 
@@ -205,25 +211,22 @@ const handleRegister = async () => {
 
 .register-card {
   width: 100%;
-  max-width: 540px;
+  max-width: 800px;
   background: rgba(255, 255, 255, 0.5);
   backdrop-filter: blur(50px);
   -webkit-backdrop-filter: blur(50px);
   border: 1px solid rgba(255, 255, 255, 0.6);
-  border-radius: 40px;
+  border-radius: 32px;
   box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.15),
               0 1px 0 rgba(255, 255, 255, 0.6) inset;
-  max-height: 90vh;
   overflow: hidden;
   display: flex;
   flex-direction: column;
 }
 
 .register-card-content {
-  padding: 48px;
-  overflow-y: auto;
-  overflow-x: hidden;
-  flex: 1;
+  padding: 32px 40px;
+  overflow: visible;
 }
 
 /* 自定义滚动条样式，使其与圆角对齐 */
@@ -256,38 +259,44 @@ const handleRegister = async () => {
 
 .card-header {
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 24px;
 }
 
 .card-header h2 {
-  margin: 16px 0 0 0;
-  font-size: 32px;
+  margin: 8px 0 0 0;
+  font-size: 24px;
   font-weight: 800;
   color: #1C1C1E;
   letter-spacing: -0.02em;
 }
 
 .header-icon {
-  font-size: 48px;
-  width: 48px;
-  height: 48px;
+  font-size: 36px;
+  width: 36px;
+  height: 36px;
   color: #1C1C1E;
 }
 
 .register-form {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 16px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
 }
 
 .form-label {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
   color: #636366;
   text-transform: uppercase;
@@ -302,23 +311,23 @@ const handleRegister = async () => {
 
 .input-icon {
   position: absolute;
-  left: 20px;
-  font-size: 20px;
-  width: 20px;
-  height: 20px;
+  left: 14px;
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
   color: #8E8E93;
   z-index: 1;
 }
 
 .form-input {
   width: 100%;
-  padding: 16px 20px 16px 56px;
-  border-radius: 20px;
+  padding: 12px 16px 12px 48px;
+  border-radius: 16px;
   border: 1px solid rgba(0, 0, 0, 0.1);
   background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  font-size: 17px;
+  font-size: 15px;
   color: #1C1C1E;
   box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.04);
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -338,15 +347,15 @@ const handleRegister = async () => {
 
 .radio-group {
   display: flex;
-  gap: 16px;
+  gap: 12px;
 }
 
 .radio-label {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 12px 20px;
-  border-radius: 20px;
+  gap: 6px;
+  padding: 10px 16px;
+  border-radius: 16px;
   background: rgba(255, 255, 255, 0.6);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -354,9 +363,10 @@ const handleRegister = async () => {
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   font-weight: 500;
-  font-size: 15px;
+  font-size: 14px;
   color: #1C1C1E;
   box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.04);
+  flex: 1;
 }
 
 .radio-label:hover {
@@ -380,20 +390,20 @@ const handleRegister = async () => {
 }
 
 .radio-icon {
-  font-size: 18px;
-  width: 18px;
-  height: 18px;
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
 }
 
 .submit-btn {
   width: 100%;
-  padding: 16px 24px;
-  border-radius: 24px;
+  padding: 14px 24px;
+  border-radius: 20px;
   background: #1C1C1E;
   color: white;
   border: none;
   font-weight: 700;
-  font-size: 17px;
+  font-size: 16px;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 4px 12px rgba(28, 28, 30, 0.3);
@@ -401,7 +411,7 @@ const handleRegister = async () => {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  margin-top: 8px;
+  margin-top: 4px;
 }
 
 .submit-btn:hover:not(:disabled) {
@@ -420,14 +430,14 @@ const handleRegister = async () => {
 }
 
 .btn-icon {
-  font-size: 20px;
-  width: 20px;
-  height: 20px;
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
 }
 
 .form-footer {
   text-align: center;
-  margin-top: 8px;
+  margin-top: 4px;
 }
 
 .link-btn {
@@ -461,15 +471,25 @@ const handleRegister = async () => {
 
 @media (max-width: 768px) {
   .register-card {
-    border-radius: 32px;
+    border-radius: 24px;
+    max-width: 100%;
   }
 
   .register-card-content {
-    padding: 32px 24px;
+    padding: 24px 20px;
   }
   
   .card-header h2 {
-    font-size: 28px;
+    font-size: 22px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .register-form {
+    gap: 14px;
   }
 }
 </style>

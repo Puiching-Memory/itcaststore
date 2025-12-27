@@ -10,7 +10,7 @@
           <div class="banner-container">
             <el-carousel 
               ref="carouselRef"
-              height="520px" 
+              height="360px" 
               :interval="5000" 
               indicator-position="none"
               :arrow="'hover'"
@@ -68,91 +68,71 @@
             </button>
           </div>
           
-          <div class="hot-products-container">
-            <div class="products-scroll-wrapper" ref="scrollContainer">
-              <div class="products-scroll-content">
-                <div 
-                  v-for="(product, index) in hotProducts" 
-                  :key="product.id"
-                  class="hot-product-card"
-                  :class="{ featured: index === 0 }"
-                  @click="goToProduct(product.id)"
-                >
-                  <div class="hot-product-badge" v-if="index < 3">
-                    <Icon icon="mdi:trending-up" class="trending-icon" />
-                    <span>TOP {{ index + 1 }}</span>
+          <div class="hot-products-grid">
+            <div 
+              v-for="(product, index) in hotProducts" 
+              :key="product.id"
+              class="hot-product-card"
+              :class="{ featured: index === 0 }"
+              @click="goToProduct(product.id)"
+            >
+              <div class="hot-product-badge" v-if="index < 3">
+                <Icon icon="mdi:trending-up" class="trending-icon" />
+                <span>TOP {{ index + 1 }}</span>
+              </div>
+              <div class="hot-product-image-wrapper">
+                <img 
+                  :src="product.imgurl || '/products/product-1.png'" 
+                  :alt="product.name"
+                  class="hot-product-image"
+                  @error="handleImageError($event)"
+                />
+                <div class="hot-product-overlay">
+                  <button class="hot-view-btn" @click.stop="goToProduct(product.id)">
+                    <Icon icon="mdi:eye" />
+                    <span>查看详情</span>
+                  </button>
+                </div>
+              </div>
+              <div class="hot-product-content">
+                <div class="hot-product-header">
+                  <h3 class="hot-product-name">{{ product.name }}</h3>
+                  <div class="hot-product-tags">
+                    <span class="tag">热销</span>
+                    <span class="tag" v-if="index === 0">推荐</span>
                   </div>
-                  <div class="hot-product-image-wrapper">
-                    <img 
-                      :src="product.imgurl || '/products/product-1.png'" 
-                      :alt="product.name"
-                      class="hot-product-image"
-                      @error="handleImageError($event)"
-                    />
-                    <div class="hot-product-overlay">
-                      <button class="hot-view-btn" @click.stop="goToProduct(product.id)">
-                        <Icon icon="mdi:eye" />
-                        <span>查看详情</span>
-                      </button>
-                    </div>
+                </div>
+                <div class="hot-product-footer">
+                  <div class="hot-product-price-wrapper">
+                    <span class="hot-product-price">¥{{ product.price }}</span>
+                    <span class="hot-product-label">优惠价</span>
                   </div>
-                  <div class="hot-product-content">
-                    <div class="hot-product-header">
-                      <h3 class="hot-product-name">{{ product.name }}</h3>
-                      <div class="hot-product-tags">
-                        <span class="tag">热销</span>
-                        <span class="tag" v-if="index === 0">推荐</span>
-                      </div>
-                    </div>
-                    <div class="hot-product-footer">
-                      <div class="hot-product-price-wrapper">
-                        <span class="hot-product-price">¥{{ product.price }}</span>
-                        <span class="hot-product-label">优惠价</span>
-                      </div>
-                      <button class="hot-cart-btn" @click.stop="addToCart(product)">
-                        <Icon icon="mdi:cart-plus" class="hot-cart-icon" />
-                        <span>立即购买</span>
-                      </button>
-                    </div>
-                  </div>
+                  <button class="hot-cart-btn" @click.stop="addToCart(product)">
+                    <Icon icon="mdi:cart-plus" class="hot-cart-icon" />
+                    <span>立即购买</span>
+                  </button>
                 </div>
               </div>
             </div>
-            <button 
-              class="scroll-nav-btn scroll-nav-left" 
-              @click="scrollHotProducts('left')"
-              v-if="hotProducts.length > 4"
-            >
-              <Icon icon="mdi:chevron-left" />
-            </button>
-            <button 
-              class="scroll-nav-btn scroll-nav-right" 
-              @click="scrollHotProducts('right')"
-              v-if="hotProducts.length > 4"
-            >
-              <Icon icon="mdi:chevron-right" />
-            </button>
           </div>
         </div>
 
-        <!-- 公告区域 -->
-        <div class="section notices">
-          <div class="section-header">
-            <div class="section-title-wrapper">
-              <div class="horn-badge">
-                <Icon icon="mdi:bullhorn" class="section-icon" />
-              </div>
-              <div>
-                <h2 class="section-title">系统公告</h2>
-                <p class="section-subtitle">最新动态，重要信息</p>
-              </div>
+        <!-- 公告区域 - 固定在右侧 -->
+        <div class="notices-sidebar">
+          <div class="notices-sidebar-header">
+            <div class="horn-badge">
+              <Icon icon="mdi:bullhorn" class="section-icon" />
+            </div>
+            <div>
+              <h2 class="notices-sidebar-title">系统公告</h2>
+              <p class="notices-sidebar-subtitle">最新动态</p>
             </div>
           </div>
-          <div class="notices-grid">
+          <div class="notices-sidebar-content">
             <div 
               v-for="(notice, index) in notices" 
               :key="notice.id"
-              class="notice-card-modern"
+              class="notice-card-sidebar"
               :class="{ highlight: index === 0 }"
             >
               <div class="notice-card-header">
@@ -167,8 +147,8 @@
                   <span class="notice-badge" v-if="index === 0">最新</span>
                 </div>
               </div>
-              <h3 class="notice-title-modern">{{ notice.title }}</h3>
-              <div class="notice-content-modern" v-html="notice.details"></div>
+              <h3 class="notice-title-sidebar">{{ notice.title }}</h3>
+              <div class="notice-content-sidebar" v-html="notice.details"></div>
               <div class="notice-footer">
                 <button class="notice-read-more" @click="handleNoticeClick(notice)">
                   <span>查看详情</span>
@@ -288,22 +268,8 @@ const agentQuestion = ref('')
 const agentAnswer = ref('')
 const agentLoading = ref(false)
 const agentBubbleOpen = ref(false)
-const scrollContainer = ref<HTMLElement | null>(null)
 const currentBannerIndex = ref(0)
 const carouselRef = ref<ComponentPublicInstance | null>(null)
-
-const scrollHotProducts = (direction: 'left' | 'right') => {
-  if (!scrollContainer.value) return
-  const scrollAmount = 400
-  const currentScroll = scrollContainer.value.scrollLeft
-  const targetScroll = direction === 'right' 
-    ? currentScroll + scrollAmount 
-    : currentScroll - scrollAmount
-  scrollContainer.value.scrollTo({
-    left: targetScroll,
-    behavior: 'smooth'
-  })
-}
 
 const goToProduct = (id: number) => {
   router.push(`/product/${id}`)
@@ -388,13 +354,14 @@ onMounted(async () => {
 }
 
 :deep(.el-main) {
-  padding: 32px 0;
+  padding: 24px 0;
+  padding-right: 400px; /* 为右侧固定公告留出空间 */
   background: transparent;
 }
 
 /* 轮播图区域 */
 .banner-section {
-  margin: 0 auto 100px;
+  margin: 0 auto 50px;
   max-width: 1400px;
   padding: 0 32px;
 }
@@ -416,7 +383,7 @@ onMounted(async () => {
 }
 
 .hero-carousel :deep(.el-carousel__container) {
-  height: 520px;
+  height: 360px;
 }
 
 .hero-carousel :deep(.el-carousel__arrow) {
@@ -459,7 +426,7 @@ onMounted(async () => {
 
 .banner-wrapper {
   width: 100%;
-  height: 520px;
+  height: 360px;
   position: relative;
   display: flex;
   align-items: center;
@@ -505,7 +472,7 @@ onMounted(async () => {
 .banner-content {
   position: relative;
   z-index: 3;
-  padding: 0 80px;
+  padding: 0 60px;
   max-width: 680px;
   color: white;
 }
@@ -514,15 +481,15 @@ onMounted(async () => {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 20px;
+  padding: 6px 16px;
   background: rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(var(--blur-sm));
   -webkit-backdrop-filter: blur(var(--blur-sm));
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: var(--radius-lg);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
   box-shadow: var(--shadow-md);
 }
 
@@ -533,8 +500,8 @@ onMounted(async () => {
 }
 
 .banner-title {
-  margin: 0 0 16px 0;
-  font-size: 56px;
+  margin: 0 0 12px 0;
+  font-size: 42px;
   font-weight: 900;
   line-height: 1.1;
   letter-spacing: -0.03em;
@@ -542,8 +509,8 @@ onMounted(async () => {
 }
 
 .banner-subtitle {
-  margin: 0 0 32px 0;
-  font-size: 20px;
+  margin: 0 0 24px 0;
+  font-size: 18px;
   font-weight: 500;
   line-height: 1.6;
   color: rgba(255, 255, 255, 0.95);
@@ -553,13 +520,13 @@ onMounted(async () => {
 .banner-cta {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
-  padding: 18px 36px;
+  gap: 10px;
+  padding: 14px 28px;
   background: white;
   color: var(--graphite);
   border: none;
   border-radius: var(--radius-2xl);
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 700;
   cursor: pointer;
   transition: var(--transition-base);
@@ -623,7 +590,7 @@ onMounted(async () => {
 
 /* 通用区域样式 */
 .section {
-  margin-top: 80px;
+  margin-top: 50px;
   max-width: 1400px;
   margin-left: auto;
   margin-right: auto;
@@ -634,7 +601,7 @@ onMounted(async () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 40px;
+  margin-bottom: 28px;
 }
 
 .section-title-wrapper {
@@ -644,26 +611,26 @@ onMounted(async () => {
 }
 
 .fire-badge {
-  width: 64px;
-  height: 64px;
-  border-radius: 20px;
+  width: 56px;
+  height: 56px;
+  border-radius: 18px;
   background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 8px 24px rgba(255, 107, 107, 0.3);
+  box-shadow: 0 6px 20px rgba(255, 107, 107, 0.3);
 }
 
 .section-icon {
-  font-size: 32px;
-  width: 32px;
-  height: 32px;
+  font-size: 28px;
+  width: 28px;
+  height: 28px;
   color: white;
 }
 
 .section-title {
   margin: 0 0 4px 0;
-  font-size: 36px;
+  font-size: 28px;
   font-weight: 900;
   color: var(--graphite);
   letter-spacing: -0.03em;
@@ -712,37 +679,16 @@ onMounted(async () => {
   height: 18px;
 }
 
-/* 热卖商品区域 - 横向滚动设计 */
-.hot-products-container {
-  position: relative;
-  margin-top: 40px;
-}
-
-.products-scroll-wrapper {
-  overflow-x: auto;
-  overflow-y: hidden;
-  scroll-behavior: smooth;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  padding: 20px 0;
-  margin: 0 -32px;
-  padding-left: 32px;
-  padding-right: 32px;
-}
-
-.products-scroll-wrapper::-webkit-scrollbar {
-  display: none;
-}
-
-.products-scroll-content {
-  display: flex;
-  gap: 32px;
-  width: max-content;
+/* 热卖商品区域 - 网格布局设计 */
+.hot-products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+  margin-top: 0;
+  align-items: start;
 }
 
 .hot-product-card {
-  flex-shrink: 0;
-  width: 380px;
   background: var(--frosted-bg-medium);
   backdrop-filter: blur(var(--blur-lg));
   -webkit-backdrop-filter: blur(var(--blur-lg));
@@ -751,29 +697,59 @@ onMounted(async () => {
   overflow: hidden;
   box-shadow: var(--shadow-xl),
               var(--shadow-inset);
-  transition: var(--transition-slow);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
   position: relative;
 }
 
+.hot-product-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: var(--radius-2xl);
+  padding: 2px;
+  background: linear-gradient(135deg, rgba(255, 107, 107, 0.3), rgba(255, 142, 83, 0.3), rgba(74, 144, 226, 0.3));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1;
+  pointer-events: none;
+}
+
 .hot-product-card.featured {
-  width: 480px;
   box-shadow: var(--shadow-2xl),
               0 0 0 2px rgba(255, 107, 107, 0.2),
               var(--shadow-inset-light);
 }
 
+.hot-product-card.featured::before {
+  background: linear-gradient(135deg, rgba(255, 107, 107, 0.5), rgba(255, 142, 83, 0.5));
+}
+
 .hot-product-card:hover {
-  transform: translateY(-6px) scale(1.02);
-  box-shadow: 0 36px 72px -16px rgba(0, 0, 0, 0.15),
-              var(--shadow-inset-light);
-  border-color: var(--frosted-border-light);
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 20px 60px -12px rgba(0, 0, 0, 0.25),
+              0 0 0 1px rgba(255, 255, 255, 0.5),
+              inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.hot-product-card:hover::before {
+  opacity: 1;
 }
 
 .hot-product-card.featured:hover {
-  box-shadow: 0 40px 80px -16px rgba(0, 0, 0, 0.2),
-              0 0 0 2px rgba(255, 107, 107, 0.3),
-              0 1px 0 rgba(255, 255, 255, 0.9) inset;
+  transform: translateY(-10px) scale(1.04);
+  box-shadow: 0 24px 72px -12px rgba(255, 107, 107, 0.3),
+              0 0 0 2px rgba(255, 107, 107, 0.4),
+              inset 0 1px 0 rgba(255, 255, 255, 0.7);
+  border-color: rgba(255, 107, 107, 0.4);
 }
 
 .hot-product-badge {
@@ -790,9 +766,17 @@ onMounted(async () => {
   font-size: 13px;
   font-weight: 700;
   color: white;
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4),
+              0 0 0 1px rgba(255, 255, 255, 0.2) inset;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hot-product-card:hover .hot-product-badge {
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(255, 107, 107, 0.5),
+              0 0 0 1px rgba(255, 255, 255, 0.3) inset;
 }
 
 .trending-icon {
@@ -804,7 +788,7 @@ onMounted(async () => {
 .hot-product-image-wrapper {
   position: relative;
   width: 100%;
-  aspect-ratio: 1 / 1;
+  aspect-ratio: 4 / 3;
   overflow: hidden;
   background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
 }
@@ -813,11 +797,13 @@ onMounted(async () => {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: brightness(1) saturate(1);
 }
 
 .hot-product-card:hover .hot-product-image {
-  transform: scale(1.08);
+  transform: scale(1.12) translateZ(0);
+  filter: brightness(1.1) saturate(1.15);
 }
 
 .hot-product-overlay {
@@ -826,18 +812,29 @@ onMounted(async () => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.3) 0%,
+    rgba(0, 0, 0, 0.5) 50%,
+    rgba(0, 0, 0, 0.3) 100%
+  );
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   display: flex;
   align-items: center;
   justify-content: center;
   opacity: 0;
-  transition: opacity var(--transition-base);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .hot-product-card:hover .hot-product-overlay {
   opacity: 1;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.4) 0%,
+    rgba(0, 0, 0, 0.6) 50%,
+    rgba(0, 0, 0, 0.4) 100%
+  );
 }
 
 .hot-view-btn {
@@ -845,23 +842,32 @@ onMounted(async () => {
   align-items: center;
   gap: 8px;
   padding: 12px 24px;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(var(--blur-sm));
-  -webkit-backdrop-filter: blur(var(--blur-sm));
-  border: 1px solid var(--frosted-border-light);
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: var(--radius-lg);
   font-size: 15px;
   font-weight: 600;
   color: var(--graphite);
   cursor: pointer;
-  transition: var(--transition-fast);
-  box-shadow: var(--shadow-lg);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2),
+              0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+  transform: translateY(10px);
+  opacity: 0;
+}
+
+.hot-product-card:hover .hot-view-btn {
+  transform: translateY(0);
+  opacity: 1;
 }
 
 .hot-view-btn:hover {
-  transform: scale(1.05);
+  transform: translateY(-2px) scale(1.05);
   background: white;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3),
+              0 0 0 1px rgba(255, 255, 255, 0.2) inset;
 }
 
 .hot-view-btn :deep(svg) {
@@ -870,35 +876,33 @@ onMounted(async () => {
 }
 
 .hot-product-content {
-  padding: 28px;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.hot-product-header {
+  padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
+.hot-product-header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 .hot-product-name {
   margin: 0;
-  font-size: 22px;
+  font-size: 18px;
   font-weight: 800;
   color: var(--graphite);
   line-height: 1.3;
   letter-spacing: -0.02em;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  line-clamp: 2;
-  -webkit-box-orient: vertical;
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  max-width: 100%;
 }
 
 .hot-product-card.featured .hot-product-name {
-  font-size: 26px;
+  font-size: 20px;
 }
 
 .hot-product-tags {
@@ -922,8 +926,8 @@ onMounted(async () => {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  gap: 16px;
-  padding-top: 8px;
+  gap: 12px;
+  padding-top: 6px;
   border-top: 1px solid rgba(0, 0, 0, 0.06);
 }
 
@@ -934,15 +938,21 @@ onMounted(async () => {
 }
 
 .hot-product-price {
-  font-size: 32px;
+  font-size: 26px;
   font-weight: 900;
   color: var(--graphite);
   letter-spacing: -0.03em;
   line-height: 1;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .hot-product-card.featured .hot-product-price {
-  font-size: 36px;
+  font-size: 28px;
+}
+
+.hot-product-card:hover .hot-product-price {
+  color: #FF6B6B;
+  transform: scale(1.05);
 }
 
 .hot-product-label {
@@ -956,28 +966,47 @@ onMounted(async () => {
 .hot-cart-btn {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 14px 28px;
-  background: var(--graphite);
+  gap: 6px;
+  padding: 10px 20px;
+  background: linear-gradient(135deg, var(--graphite) 0%, var(--graphite-light) 100%);
   color: white;
   border: none;
   border-radius: var(--radius-lg);
   font-weight: 700;
-  font-size: 15px;
+  font-size: 14px;
   cursor: pointer;
-  transition: var(--transition-fast);
-  box-shadow: 0 6px 20px rgba(28, 28, 30, 0.25);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 16px rgba(28, 28, 30, 0.25),
+              0 0 0 1px rgba(255, 255, 255, 0.1) inset;
   white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+}
+
+.hot-cart-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
 }
 
 .hot-cart-btn:hover {
-  background: var(--graphite-light);
-  box-shadow: 0 8px 24px rgba(28, 28, 30, 0.3);
-  transform: translateY(-2px);
+  background: linear-gradient(135deg, var(--graphite-light) 0%, var(--graphite) 100%);
+  box-shadow: 0 8px 24px rgba(28, 28, 30, 0.35),
+              0 0 0 1px rgba(255, 255, 255, 0.15) inset;
+  transform: translateY(-2px) scale(1.02);
+}
+
+.hot-cart-btn:hover::before {
+  left: 100%;
 }
 
 .hot-cart-btn:active {
-  transform: translateY(0);
+  transform: translateY(0) scale(0.98);
 }
 
 .hot-cart-icon {
@@ -986,121 +1015,137 @@ onMounted(async () => {
   height: 18px;
 }
 
-.scroll-nav-btn {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 56px;
-  height: 56px;
-  border-radius: var(--radius-full);
-  background: var(--frosted-bg-full);
-  backdrop-filter: blur(var(--blur-md));
-  -webkit-backdrop-filter: blur(var(--blur-md));
+
+/* 公告区域 - 固定在右侧 */
+.notices-sidebar {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  width: 360px;
+  max-height: calc(100vh - 100px);
+  background: var(--frosted-bg-medium);
+  backdrop-filter: blur(var(--blur-lg));
+  -webkit-backdrop-filter: blur(var(--blur-lg));
   border: 1px solid var(--frosted-border);
-  box-shadow: var(--shadow-lg);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-2xl);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.notices-sidebar-header {
+  padding: 20px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
   display: flex;
   align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: var(--transition-base);
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.notices-sidebar-title {
+  margin: 0 0 4px 0;
+  font-size: 20px;
+  font-weight: 900;
   color: var(--graphite);
-  z-index: 10;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
 }
 
-.scroll-nav-btn:hover {
-  background: white;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
-  transform: translateY(-50%) scale(1.1);
+.notices-sidebar-subtitle {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ios-gray-600);
+  letter-spacing: -0.01em;
 }
 
-.scroll-nav-btn:active {
-  transform: translateY(-50%) scale(0.95);
+.notices-sidebar-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
-.scroll-nav-left {
-  left: -28px;
+.notices-sidebar-content::-webkit-scrollbar {
+  width: 6px;
 }
 
-.scroll-nav-right {
-  right: -28px;
+.notices-sidebar-content::-webkit-scrollbar-track {
+  background: transparent;
 }
 
-.scroll-nav-btn :deep(svg) {
-  font-size: 24px;
-  width: 24px;
-  height: 24px;
+.notices-sidebar-content::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
 }
 
-/* 公告区域 - 现代化卡片网格设计 */
+.notices-sidebar-content::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
+
 .horn-badge {
-  width: 64px;
-  height: 64px;
+  width: 48px;
+  height: 48px;
   border-radius: var(--radius-md);
   background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: var(--shadow-lg);
+  flex-shrink: 0;
 }
 
-.notices-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
-  gap: 32px;
-  margin-top: 40px;
-}
-
-.notice-card-modern {
-  background: var(--frosted-bg-medium);
-  backdrop-filter: blur(var(--blur-lg));
-  -webkit-backdrop-filter: blur(var(--blur-lg));
+.notice-card-sidebar {
+  background: var(--frosted-bg-heavy);
+  backdrop-filter: blur(var(--blur-md));
+  -webkit-backdrop-filter: blur(var(--blur-md));
   border: 1px solid var(--frosted-border);
-  border-radius: var(--radius-2xl);
-  padding: 32px;
-  box-shadow: var(--shadow-xl),
-              var(--shadow-inset);
-  transition: var(--transition-slow);
+  border-radius: var(--radius-xl);
+  padding: 16px;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition-base);
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 12px;
   position: relative;
   overflow: hidden;
 }
 
-.notice-card-modern::before {
+.notice-card-sidebar::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 4px;
+  height: 3px;
   background: linear-gradient(90deg, #4A90E2 0%, #357ABD 100%);
   opacity: 0;
   transition: opacity 0.3s ease;
 }
 
-.notice-card-modern.highlight::before {
+.notice-card-sidebar.highlight::before {
   opacity: 1;
 }
 
-.notice-card-modern.highlight {
+.notice-card-sidebar.highlight {
   border-color: rgba(74, 144, 226, 0.3);
-  box-shadow: 0 28px 56px -12px rgba(74, 144, 226, 0.15),
-              0 0 0 2px rgba(74, 144, 226, 0.1),
-              var(--shadow-inset-light);
+  box-shadow: 0 4px 12px rgba(74, 144, 226, 0.15),
+              0 0 0 1px rgba(74, 144, 226, 0.1);
 }
 
-.notice-card-modern:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 32px 64px -16px rgba(0, 0, 0, 0.12),
-              var(--shadow-inset-light);
+.notice-card-sidebar:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
   border-color: var(--frosted-border-light);
 }
 
-.notice-card-modern.highlight:hover {
-  box-shadow: 0 36px 72px -16px rgba(74, 144, 226, 0.2),
-              0 0 0 2px rgba(74, 144, 226, 0.2),
-              0 1px 0 rgba(255, 255, 255, 0.9) inset;
+.notice-card-sidebar.highlight:hover {
+  box-shadow: 0 8px 20px rgba(74, 144, 226, 0.2),
+              0 0 0 1px rgba(74, 144, 226, 0.2);
 }
 
 .notice-card-header {
@@ -1111,9 +1156,9 @@ onMounted(async () => {
 }
 
 .notice-icon-wrapper {
-  width: 56px;
-  height: 56px;
-  border-radius: 18px;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
   background: linear-gradient(135deg, rgba(74, 144, 226, 0.15) 0%, rgba(53, 122, 189, 0.1) 100%);
   display: flex;
   align-items: center;
@@ -1126,9 +1171,9 @@ onMounted(async () => {
 }
 
 .notice-icon-modern {
-  font-size: 28px;
-  width: 28px;
-  height: 28px;
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
   color: #4A90E2;
 }
 
@@ -1161,27 +1206,30 @@ onMounted(async () => {
   box-shadow: var(--shadow-sm);
 }
 
-.notice-title-modern {
+.notice-title-sidebar {
   margin: 0;
-  font-size: 24px;
+  font-size: 16px;
   font-weight: 800;
   color: var(--graphite);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
   line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.notice-card-modern.highlight .notice-title-modern {
-  font-size: 26px;
+.notice-card-sidebar.highlight .notice-title-sidebar {
+  font-size: 17px;
 }
 
-.notice-content-modern {
+.notice-content-sidebar {
   color: var(--ios-gray-700);
-  line-height: 1.8;
-  font-size: 15px;
+  line-height: 1.5;
+  font-size: 13px;
   flex: 1;
   display: -webkit-box;
-  -webkit-line-clamp: 3;
-  line-clamp: 3;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1201,12 +1249,12 @@ onMounted(async () => {
 .notice-read-more {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 20px;
+  gap: 6px;
+  padding: 8px 16px;
   background: transparent;
   border: 1px solid rgba(28, 28, 30, 0.1);
   border-radius: var(--radius-md);
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--graphite);
   cursor: pointer;
@@ -1448,7 +1496,7 @@ onMounted(async () => {
 @media (max-width: 768px) {
   .banner-section {
     padding: 0 16px;
-    margin-bottom: 60px;
+    margin-bottom: 40px;
   }
 
   .banner-container {
@@ -1458,7 +1506,7 @@ onMounted(async () => {
   .hero-carousel,
   .hero-carousel :deep(.el-carousel__container),
   .banner-wrapper {
-    height: 400px;
+    height: 280px;
   }
 
   .banner-content {
@@ -1513,38 +1561,28 @@ onMounted(async () => {
 
   .section {
     padding: 0 16px;
+    margin-top: 40px;
   }
 
   .section-title {
     font-size: 24px;
   }
 
-  .notices-grid {
-    grid-template-columns: 1fr;
-    gap: 24px;
+  :deep(.el-main) {
+    padding-right: 0;
   }
 
-  .notice-card-modern {
-    padding: 24px;
+  .notices-sidebar {
+    position: relative;
+    top: auto;
+    right: auto;
+    width: 100%;
+    max-height: none;
+    margin-top: 40px;
   }
 
-  .notice-icon-wrapper {
-    width: 48px;
-    height: 48px;
-  }
-
-  .notice-icon-modern {
-    font-size: 24px;
-    width: 24px;
-    height: 24px;
-  }
-
-  .notice-title-modern {
-    font-size: 20px;
-  }
-
-  .notice-card-modern.highlight .notice-title-modern {
-    font-size: 22px;
+  .notices-sidebar-content {
+    max-height: 400px;
   }
 
   .agent-bubble-card {
@@ -1552,22 +1590,10 @@ onMounted(async () => {
     right: -10px;
   }
 
-  .hot-products-container {
-    margin: 0 -16px;
-    padding-left: 16px;
-    padding-right: 16px;
-  }
-
-  .products-scroll-content {
-    gap: 20px;
-  }
-
-  .hot-product-card {
-    width: 280px;
-  }
-
-  .hot-product-card.featured {
-    width: 320px;
+  .hot-products-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    margin-top: 32px;
   }
 
   .hot-product-name {

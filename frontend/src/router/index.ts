@@ -52,6 +52,12 @@ const router = createRouter({
       name: 'notice-manage',
       component: () => import('@/views/NoticeManage.vue'),
       meta: { requiresAuth: true }
+    },
+    {
+      path: '/products/manage',
+      name: 'product-manage',
+      component: () => import('@/views/ProductManage.vue'),
+      meta: { requiresAuth: true }
     }
   ]
 })

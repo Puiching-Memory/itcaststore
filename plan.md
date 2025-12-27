@@ -6,9 +6,9 @@
 
 本项目采用现代化的前后端分离架构：
 
-- **后端**: Spring Boot 4.0.0 + Java 25 + PostgreSQL 16 + Spring Security + JWT
-- **前端**: Vue 3 + TypeScript + Element Plus + Vite
-- **部署**: Docker + Docker Compose + Nginx
+- **后端**: Spring Boot 4.0.0 + Java 25 + PostgreSQL 17 + Spring Security + JWT
+- **前端**: Vue 3 + TypeScript + Element Plus + Vite + Pinia
+- **部署**: Docker + Docker Compose（支持代码热重载）
 
 ### 前端功能汇总表
 
@@ -32,9 +32,9 @@
 | 后端1    | 用户注册接口     | 实现用户注册API和数据验证      | ✅ 已完成 |
 | 后端2    | 用户登录接口     | 实现用户登录认证API和Token生成 | ✅ 已完成 |
 | 后端3    | 用户信息管理接口 | 实现用户信息更新API            | ✅ 已完成 |
-| 后端4    | 商品添加接口     | 实现商品添加API和数据验证      | ❌ 未实现 |
-| 后端5    | 商品编辑接口     | 实现商品信息编辑API            | ❌ 未实现 |
-| 后端6    | 商品删除接口     | 实现商品删除API                | ❌ 未实现 |
+| 后端4    | 商品添加接口     | 实现商品添加API和数据验证      | ✅ 已完成 |
+| 后端5    | 商品编辑接口     | 实现商品信息编辑API            | ✅ 已完成 |
+| 后端6    | 商品删除接口     | 实现商品删除API                | ✅ 已完成 |
 | 后端7    | 商品查询接口     | 实现商品查询API和分页功能      | ✅ 已完成（支持分页、分类、搜索） |
 | 后端8    | 公告添加接口     | 实现公告添加API和数据验证      | ✅ 已完成 |
 | 后端9    | 公告编辑接口     | 实现公告信息编辑API            | ✅ 已完成 |
@@ -64,9 +64,12 @@
 - `/api/auth/login` - 用户登录
 - `/api/users/me` (GET) - 获取当前用户信息（需要JWT认证）
 - `/api/users/me` (PUT) - 更新当前用户信息（需要JWT认证，支持部分字段更新：email、gender、telephone、introduce）
-- `/api/products` - 商品列表（支持分页、分类、搜索）
-- `/api/products/{id}` - 商品详情
-- `/api/products/hot` - 热卖商品
+- `/api/products` (GET) - 商品列表（支持分页、分类、搜索）
+- `/api/products/{id}` (GET) - 商品详情
+- `/api/products/hot` (GET) - 热卖商品
+- `/api/products` (POST) - 添加商品（需要数据验证）
+- `/api/products/{id}` (PUT) - 更新商品（需要数据验证）
+- `/api/products/{id}` (DELETE) - 删除商品
 - `/api/orders` (GET) - 订单列表（分页，需要JWT认证）
 - `/api/orders/list` - 订单列表（全部，需要JWT认证）
 - `/api/orders` (POST) - 创建订单（需要JWT认证）
@@ -83,8 +86,9 @@
 - 商品列表页面（支持搜索、分类筛选）
 - 商品详情页面
 - 订单查询页面
-- 个人中心页面（支持查看和编辑用户信息）
+- 个人中心页面（支持查看和编辑用户信息，现代化UI设计）
 - 购物车页面（支持添加/删除商品、数量管理、本地存储）
+- 商品管理页面（支持添加/编辑/删除商品，仅管理员可见）
 - 公告管理页面（支持添加/编辑/删除公告，仅管理员可见）
 
 ### Docker 部署计划 ✅ 已完成
@@ -92,9 +96,10 @@
 #### 部署架构设计
 
 - **容器化组件**：
-  - 后端应用容器（Spring Boot 4.0.0 + Java 25）✅
-  - 前端应用容器（Vue 3 + Nginx 反向代理）✅
-  - 数据库容器（PostgreSQL 16）✅
+  - 后端应用容器（Spring Boot 4.0.0 + Java 25，支持热重载）✅
+  - 前端应用容器（Vue 3 + Vite 开发服务器，支持热重载）✅
+  - 数据库容器（PostgreSQL 17）✅
+  - Langflow 智能体服务（可选）✅
   
 - **技术方案**：Docker + Docker Compose ✅
   - 使用 Docker Compose 统一管理多容器服务 ✅
@@ -105,7 +110,7 @@
 
 **Docker 环境准备**
 - ✅ 编写后端应用 Dockerfile（Spring Boot 4.0.0 + Java 25）
-- ✅ 编写前端应用 Dockerfile（Vue 3 + Nginx）
+- ✅ 编写前端应用 Dockerfile（Vue 3 + Vite 开发服务器）
 - ✅ 配置 PostgreSQL 数据库初始化脚本
 - ✅ 创建 Docker Compose 配置文件
 - ✅ 配置 Maven 镜像加速（阿里云镜像）
@@ -121,8 +126,7 @@ itcaststore/
 ├── backend/
 │   └── Dockerfile             # Spring Boot 应用镜像 ✅
 ├── frontend/
-│   ├── Dockerfile              # Vue 前端镜像 ✅
-│   └── nginx.conf              # Nginx 配置 ✅
+│   └── Dockerfile              # Vue 前端镜像（Vite 开发服务器）✅
 └── .dockerignore               # Docker 忽略文件 ✅
 ```
 
@@ -149,21 +153,36 @@ docker-compose down -v
 ### 待实现功能
 
 #### 后端待实现
-- [ ] 商品管理接口（POST/PUT/DELETE /api/products）
-- [x] 公告管理接口（POST/PUT/DELETE /api/notices）✅ 已完成
 - [ ] 订单删除接口（DELETE /api/orders/{id}）
 - [ ] 文件上传接口（商品图片）
-- [ ] 购物车管理接口（增删改查）
+- [ ] 购物车管理接口（增删改查，目前使用前端本地存储）
 - [ ] 订单支付状态更新接口
 
 #### 前端待实现
-- [x] 用户信息编辑功能（Profile.vue 已实现编辑功能，后端API `/api/users/me` PUT已实现）
-- [x] 购物车基础功能（Cart.vue 已实现添加/删除商品、数量管理、本地存储，结算功能待实现）
-- [x] 商品分类筛选UI（已实现分类筛选功能，支持20个图书分类）
-- [x] 公告管理页面（NoticeManage.vue 已实现添加/编辑/删除功能，后端API已实现）
-- [ ] 订单创建完整流程（后端接口已实现，前端流程需完善）
-- [ ] 商品图片上传（管理后台）
-- [ ] 管理后台页面（商品管理、订单管理、用户管理）
-- [ ] 前端图片资源（Logo、Banner、商品图片等，部分已实现）
+- [ ] 订单创建完整流程（后端接口已实现，前端结算流程需完善）
+- [ ] 商品图片上传功能（管理后台）
+- [ ] 用户管理页面（管理后台）
+- [ ] 订单管理页面（管理后台，目前只有订单查询）
+
+### 已完成功能 ✅
+
+#### 核心功能
+- ✅ 用户注册登录（JWT 认证）
+- ✅ 商品浏览、搜索、分页、分类筛选
+- ✅ 商品详情展示
+- ✅ 商品管理（增删改查，管理员功能）
+- ✅ 购物车管理（前端本地存储）
+- ✅ 订单创建和查询
+- ✅ 个人中心（查看和编辑用户信息）
+- ✅ 公告管理（增删改查，管理员功能）
+- ✅ 热卖商品推荐
+- ✅ 权限控制（RBAC，基于角色的访问控制）
+
+#### 技术特性
+- ✅ Docker 容器化部署
+- ✅ 代码热重载（前后端都支持）
+- ✅ Git LFS 管理大文件
+- ✅ 响应式设计（移动端适配）
+- ✅ 现代化 UI 设计（iOS 风格，毛玻璃效果）
 
 > **备注**：本计划将根据实际开发进度动态调整，确保核心功能完整实现。

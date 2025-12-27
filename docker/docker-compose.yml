@@ -1,7 +1,7 @@
 services:
   # PostgreSQL 数据库服务
   postgres:
-    image: postgres:16-alpine
+    image: postgres:17-alpine
     container_name: itcaststore_postgres
     restart: unless-stopped
     environment:
@@ -22,7 +22,7 @@ services:
       timeout: 5s
       retries: 5
 
-  # 后端应用服务（Spring Boot）
+  # 后端应用服务（Spring Boot - 支持热重载）
   backend:
     build:
       context: ../backend
@@ -37,9 +37,17 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/itcaststore
       - SPRING_DATASOURCE_USERNAME=itcaststore
       - SPRING_DATASOURCE_PASSWORD=itcaststore
+      - SPRING_DEVTOOLS_RESTART_ENABLED=true
+      - SPRING_DEVTOOLS_LIVERELOAD_ENABLED=true
     ports:
       - "8080:8080"
+      - "35729:35729"  # LiveReload 端口
     volumes:
+      # 挂载整个后端目录，实现代码热重载
+      - ../backend:/app
+      # Maven 本地仓库缓存（加速构建）
+      - maven_cache:/root/.m2
+      # 上传文件目录
       - uploads_data:/app/uploads
     networks:
       - itcaststore_network
@@ -50,7 +58,7 @@ services:
       retries: 3
       start_period: 60s
 
-  # 前端应用服务（Nginx）
+  # 前端应用服务（Vite 开发服务器 - 支持热重载）
   frontend:
     build:
       context: ../frontend
@@ -59,15 +67,18 @@ services:
     restart: unless-stopped
     depends_on:
       - backend
+    environment:
+      - TZ=Asia/Shanghai
+      - DOCKER_ENV=true  # 标识在 Docker 环境中运行
     ports:
-      - "80:80"
+      - "5173:5173"  # Vite 开发服务器端口
+    volumes:
+      # 挂载整个前端目录，实现代码热重载
+      - ../frontend:/app
+      # 使用匿名卷保护 node_modules，避免被宿主机覆盖
+      - /app/node_modules
     networks:
       - itcaststore_network
-    healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/", "||", "exit", "1"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
 
   # Langflow 智能体服务
   langflow:
@@ -93,4 +104,6 @@ volumes:
   uploads_data:
     driver: local
   langflow_data:
+    driver: local
+  maven_cache:
     driver: local
