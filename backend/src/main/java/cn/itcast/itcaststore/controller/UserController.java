@@ -64,7 +64,11 @@ public class UserController {
         if (!tokenProvider.validateToken(token)) {
             throw new RuntimeException("Token无效或已过期");
         }
-        return tokenProvider.getUserIdFromToken(token);
+        Long userId = tokenProvider.getUserIdFromToken(token);
+        if (userId == null) {
+            throw new RuntimeException("无效的Token");
+        }
+        return userId;
     }
 }
 

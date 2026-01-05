@@ -153,4 +153,10 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--ios-gray-400);
 }
+
+/* 强制覆盖下拉菜单背景 */
+.dropdown-menu,
+.el-dropdown-menu__item {
+  background-color: #ffffff !important;
+}
 </style>

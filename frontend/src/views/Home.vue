@@ -234,6 +234,7 @@ import type { ComponentPublicInstance } from 'vue'
 import Header from '@/components/Header.vue'
 import api from '@/utils/api'
 import { useCartStore } from '@/stores/cart'
+import { useUserStore } from '@/stores/user'
 
 interface Product {
   id: number
@@ -333,6 +334,16 @@ const handleAgentRecommend = async () => {
 }
 
 onMounted(async () => {
+  // 确保用户信息已加载（用于管理员权限判断）
+  const userStore = useUserStore()
+  if (userStore.isAuthenticated && !userStore.user) {
+    try {
+      await userStore.fetchUserInfo()
+    } catch (error) {
+      console.error('获取用户信息失败:', error)
+    }
+  }
+
   try {
     const [productsRes, noticesRes] = await Promise.all([
       api.get('/products/hot'),

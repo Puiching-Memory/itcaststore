@@ -51,7 +51,13 @@ public class JwtTokenProvider {
     }
 
     public Long getUserIdFromToken(String token) {
-        return getClaimFromToken(token, claims -> claims.get("userId", Long.class));
+        return getClaimFromToken(token, claims -> {
+            Object userId = claims.get("userId");
+            if (userId instanceof Number) {
+                return ((Number) userId).longValue();
+            }
+            return null;
+        });
     }
 
     public String getRoleFromToken(String token) {

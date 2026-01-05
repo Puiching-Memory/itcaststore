@@ -46,6 +46,14 @@
                   <Icon icon="mdi:store" class="dropdown-icon" />
                   <span>商品管理</span>
                 </div>
+                <div 
+                  v-if="userStore.user?.role === '超级用户' || userStore.user?.role === '管理员'"
+                  class="dropdown-item" 
+                  @click="$router.push('/orders/manage'); showDropdown = false"
+                >
+                  <Icon icon="mdi:receipt" class="dropdown-icon" />
+                  <span>订单管理</span>
+                </div>
                 <div class="dropdown-item" @click="handleLogout">
                   <Icon icon="mdi:logout" class="dropdown-icon" />
                   <span>退出登录</span>
@@ -138,7 +146,7 @@ onUnmounted(() => {
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 1000; /* 提高 z-index 确保下拉菜单不会被其他固定元素遮挡 */
   box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) inset,
               0 2px 8px rgba(0, 0, 0, 0.04);
 }
@@ -263,19 +271,19 @@ onUnmounted(() => {
   transform: rotate(180deg);
 }
 
-.dropdown-menu {
+.user-dropdown .dropdown-menu {
   position: absolute;
   top: calc(100% + 8px);
   right: 0;
   min-width: 180px;
-  background: rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(50px);
-  -webkit-backdrop-filter: blur(50px);
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 24px;
   padding: 8px;
-  box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.12),
-              0 1px 0 rgba(255, 255, 255, 0.6) inset;
+  box-shadow: 0 16px 32px -8px rgba(0, 0, 0, 0.1),
+              0 1px 0 rgba(255, 255, 255, 0.8) inset;
   z-index: 1000;
 }
 

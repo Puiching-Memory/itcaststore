@@ -60,7 +60,7 @@
 cd docker
 
 # 2. 构建并启动所有服务
-docker-compose up -d --build
+docker-compose up --build -d
 
 # 3. 查看服务状态
 docker-compose ps

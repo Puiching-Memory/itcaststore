@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import api from '@/utils/api'
 
 export interface User {
@@ -14,18 +14,18 @@ export interface User {
 
 export const useUserStore = defineStore('user', () => {
   const user = ref<User | null>(null)
+  
+  // 使用普通 ref 存储 token，避免计算属性被写入的问题
   const token = ref<string | null>(localStorage.getItem('token'))
-
-  const isAuthenticated = ref(!!token.value)
+  
+  // isAuthenticated 作为计算属性，只依赖 token
+  const isAuthenticated = computed(() => !!token.value)
 
   const login = async (username: string, password: string) => {
     const response = await api.post('/auth/login', { username, password })
     token.value = response.data.data.token
-    user.value = response.data.data.user
-    if (token.value) {
-      localStorage.setItem('token', token.value)
-    }
-    isAuthenticated.value = true
+    user.value = response.data.data.data
+    localStorage.setItem('token', token.value || '')
     return response.data
   }
 
@@ -33,10 +33,7 @@ export const useUserStore = defineStore('user', () => {
     const response = await api.post('/auth/register', userData)
     token.value = response.data.data.token
     user.value = response.data.data.user
-    if (token.value) {
-    localStorage.setItem('token', token.value)
-    }
-    isAuthenticated.value = true
+    localStorage.setItem('token', token.value || '')
     return response.data
   }
 
@@ -44,7 +41,6 @@ export const useUserStore = defineStore('user', () => {
     user.value = null
     token.value = null
     localStorage.removeItem('token')
-    isAuthenticated.value = false
   }
 
   const fetchUserInfo = async () => {
