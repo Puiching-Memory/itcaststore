@@ -14,7 +14,10 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product, String> {
     Page<Product> findByCategory(String category, Pageable pageable);
     
-    @Query("SELECT p FROM Product p WHERE p.name LIKE %:keyword% OR p.description LIKE %:keyword%")
+    @Query("SELECT p FROM Product p WHERE " +
+           "LOWER(p.name) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+           "LOWER(p.description) LIKE LOWER(CONCAT('%', :keyword, '%')) OR " +
+           "LOWER(p.category) LIKE LOWER(CONCAT('%', :keyword, '%'))")
     Page<Product> searchProducts(@Param("keyword") String keyword, Pageable pageable);
     
     List<Product> findTop10ByOrderByPnumDesc();

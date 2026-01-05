@@ -64,6 +64,12 @@ const router = createRouter({
       name: 'order-manage',
       component: () => import('@/views/OrderManage.vue'),
       meta: { requiresAuth: true }
+    },
+    {
+      path: '/users/manage',
+      name: 'user-manage',
+      component: () => import('@/views/UserManage.vue'),
+      meta: { requiresAuth: true }
     }
   ]
 })

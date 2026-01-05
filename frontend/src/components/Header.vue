@@ -54,6 +54,14 @@
                   <Icon icon="mdi:receipt" class="dropdown-icon" />
                   <span>订单管理</span>
                 </div>
+                <div 
+                  v-if="userStore.user?.role === '超级用户' || userStore.user?.role === '管理员'"
+                  class="dropdown-item" 
+                  @click="$router.push('/users/manage'); showDropdown = false"
+                >
+                  <Icon icon="mdi:account-group" class="dropdown-icon" />
+                  <span>用户管理</span>
+                </div>
                 <div class="dropdown-item" @click="handleLogout">
                   <Icon icon="mdi:logout" class="dropdown-icon" />
                   <span>退出登录</span>

@@ -177,8 +177,12 @@ const loadProducts = async () => {
       page: currentPage.value - 1,
       size: pageSize.value
     }
+    // 去除搜索关键词的前后空格
     if (keyword.value) {
-      params.keyword = keyword.value
+      const trimmedKeyword = keyword.value.trim()
+      if (trimmedKeyword) {
+        params.keyword = trimmedKeyword
+      }
     }
     if (selectedCategory.value) {
       params.category = selectedCategory.value
