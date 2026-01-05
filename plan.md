@@ -6,7 +6,7 @@
 
 本项目采用现代化的前后端分离架构：
 
-- **后端**: Spring Boot 4.0.0 + Java 25 + PostgreSQL 17 + Spring Security + JWT
+- **后端**: Spring Boot 4.0.1 + Java 25 + PostgreSQL 17 + Spring Security + JWT
 - **前端**: Vue 3 + TypeScript + Element Plus + Vite + Pinia
 - **部署**: Docker + Docker Compose（支持代码热重载）
 
@@ -98,7 +98,7 @@
 #### 部署架构设计
 
 - **容器化组件**：
-  - 后端应用容器（Spring Boot 4.0.0 + Java 25，支持热重载）✅
+  - 后端应用容器（Spring Boot 4.0.1 + Java 25，支持热重载）✅
   - 前端应用容器（Vue 3 + Vite 开发服务器，支持热重载）✅
   - 数据库容器（PostgreSQL 17）✅
   - Langflow 智能体服务（可选）✅
@@ -111,7 +111,7 @@
 #### 部署阶段规划
 
 **Docker 环境准备**
-- ✅ 编写后端应用 Dockerfile（Spring Boot 4.0.0 + Java 25）
+- ✅ 编写后端应用 Dockerfile（Spring Boot 4.0.1 + Java 25）
 - ✅ 编写前端应用 Dockerfile（Vue 3 + Vite 开发服务器）
 - ✅ 配置 PostgreSQL 数据库初始化脚本
 - ✅ 创建 Docker Compose 配置文件

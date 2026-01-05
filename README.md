@@ -14,7 +14,7 @@
 ### 技术栈
 
 **后端**：
-- Java 21 + Spring Boot 3.2
+- Java 25 + Spring Boot 4.0.1
 - Spring Security + JWT 认证
 - Spring Data JPA + PostgreSQL 17
 - Maven
@@ -189,7 +189,7 @@ git lfs migrate import --include="*.png,*.jpg,*.jpeg,*.gif,*.svg" --everything
 
 ## 九、项目亮点
 
-1. **现代化技术栈**：Java 21、Spring Boot 3.2、Vue 3、TypeScript
+1. **现代化技术栈**：Java 25、Spring Boot 4.0.1、Vue 3、TypeScript
 2. **安全机制**：JWT 认证、BCrypt 加密、Spring Security、RBAC
 3. **开发体验**：前后端分离、Docker 容器化、代码热重载
 4. **架构优势**：环境一致性、快速部署、代码规范
